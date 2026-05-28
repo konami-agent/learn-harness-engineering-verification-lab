@@ -2,18 +2,27 @@
 
 This guide explains how to use the standalone GitHub Copilot CLI from https://github.com/github/copilot-cli as the real agent behind the Chapter 01 smoke wrapper.
 
-Important correction: this guide is about the `copilot` command from `github/copilot-cli`, not the older GitHub CLI extension invoked as `gh copilot`.
+Important: this guide is about the `copilot` command from `github/copilot-cli`, not the older GitHub CLI extension invoked as `gh copilot`.
 
-The smoke boundary is unchanged: GitHub Copilot CLI runs as the real agent and may edit files, run commands, and produce artifacts, but the smoke run only passes when `harness_lab.chapter01` validates the resulting `report.json`. The agent's final answer is never enough.
+## Investigation notes
 
-## What this CLI is
+This guide was rebuilt against upstream release `v1.0.54` by checking:
 
-According to the upstream project, GitHub Copilot CLI brings the Copilot coding agent directly to the terminal. It is an agentic terminal application: it can plan, inspect a repository, propose actions, and execute work locally with user approval. It is therefore a better fit for real-agent smoke testing than the old `gh copilot suggest` shell-command helper.
+- `github/copilot-cli` README and changelog;
+- the latest release assets;
+- `copilot --help` from the `copilot-linux-arm64.tar.gz` release binary;
+- `copilot help permissions`;
+- `copilot help environment`.
 
-However, it is still an interactive terminal program. For smoke integration, assume an interactive TTY unless a later version documents a stable non-interactive mode. The smoke wrapper currently uses `subprocess.run` without a PTY, so fully unattended execution may require either:
+The key correction is that GitHub Copilot CLI does support non-interactive execution:
 
-- running the adapter manually in a terminal/tmux session, or
-- extending `harness_lab.smoke` to support PTY-backed agent commands.
+```bash
+copilot -p "Fix the bug in main.js" --allow-all-tools
+```
+
+The CLI help describes `-p, --prompt <text>` as: `Execute a prompt in non-interactive mode (exits after completion)`.
+
+It also states that `--allow-all-tools` allows tools to run automatically without confirmation and is required for non-interactive mode. For a smoke adapter this matters because the harness cannot answer approval prompts.
 
 ## Prerequisites
 
@@ -48,14 +57,17 @@ or Homebrew:
 brew install copilot-cli
 ```
 
-Verify the installed command:
+Verify the installed command and version:
 
 ```bash
 command -v copilot
+copilot --version
 copilot --help
+copilot help permissions
+copilot help environment
 ```
 
-Launch it once and authenticate:
+Authenticate once interactively:
 
 ```bash
 copilot
@@ -63,15 +75,21 @@ copilot
 
 If you are not logged in, use the `/login` slash command inside the Copilot CLI and follow the browser flow.
 
-For headless or scripted environments, upstream also documents PAT authentication through `GH_TOKEN or GITHUB_TOKEN`, using a fine-grained token with the Copilot Requests permission enabled. Do not commit tokens to this repository.
+For headless/scripted environments, upstream documents token authentication through:
 
-Optional experimental mode:
-
-```bash
-copilot --experimental
+```text
+COPILOT_GITHUB_TOKEN, GH_TOKEN, GITHUB_TOKEN
 ```
 
-Experimental mode enables features that may change. One relevant feature is Autopilot mode, which encourages the agent to continue working until the task is complete. Because behavior can change, use it for local live smoke runs first, not as a required CI path.
+`COPILOT_GITHUB_TOKEN` has the highest precedence. A fine-grained PAT must include the Copilot Requests permission. Do not commit tokens to this repository or write them into smoke summaries.
+
+Useful environment isolation option:
+
+```text
+COPILOT_HOME
+```
+
+Set `COPILOT_HOME` to a dedicated directory when you want smoke runs to avoid reusing your normal `~/.copilot` state.
 
 ## Smoke contract
 
@@ -125,11 +143,11 @@ Do not use self_report evidence. The validator rejects evidence such as:
 Keep two layers separate:
 
 1. Stable harness smoke, committed and CI-safe: `smoke/chapter-01/manifest.json` uses deterministic Python adapters.
-2. Live Copilot smoke, local/manual or PTY-backed: `smoke/chapter-01/manifest-github-copilot-cli.json` uses the real `copilot` terminal agent.
+2. Live Copilot smoke: `smoke/chapter-01/manifest-github-copilot-cli.json` uses the real `copilot -p` non-interactive agent.
 
-This avoids making every test run depend on a subscription, quota, login state, model availability, and an interactive terminal.
+This avoids making every test run depend on subscription state, quota, login state, model availability, and network availability.
 
-## Live manifest
+## Live non-interactive manifest
 
 Create `smoke/chapter-01/manifest-github-copilot-cli.json`:
 
@@ -137,8 +155,8 @@ Create `smoke/chapter-01/manifest-github-copilot-cli.json`:
 {
   "id": "chapter-01-github-copilot-cli-smoke",
   "chapter": "01",
-  "description": "Run the standalone github/copilot-cli terminal agent in an isolated workspace and validate the produced Chapter 01 report externally.",
-  "timeout_seconds": 600,
+  "description": "Run github/copilot-cli in non-interactive mode and validate the produced Chapter 01 report externally.",
+  "timeout_seconds": 900,
   "sandbox": {
     "isolate_workspace": true
   },
@@ -148,16 +166,14 @@ Create `smoke/chapter-01/manifest-github-copilot-cli.json`:
   },
   "agent_command": [
     "bash",
-    "{repo_root}/smoke/chapter-01/agents/run_github_copilot_cli.sh"
+    "{repo_root}/smoke/chapter-01/agents/run_github_copilot_cli_noninteractive.sh"
   ]
 }
 ```
 
-## Manual TTY adapter
+## Non-interactive adapter
 
-Because GitHub Copilot CLI is an interactive terminal agent, the most reliable first adapter is a manual TTY adapter. It prints the exact smoke context, opens a shell command you can run in a terminal/tmux pane, and then validates the report after you return.
-
-Create `smoke/chapter-01/agents/run_github_copilot_cli.sh`:
+Create `smoke/chapter-01/agents/run_github_copilot_cli_noninteractive.sh`:
 
 ```bash
 #!/usr/bin/env bash
@@ -189,27 +205,37 @@ Report requirements:
 - do not use self_report evidence
 - keep all side effects inside the isolated workspace
 
-After writing the report, run:
-python3 -m harness_lab.chapter01 validate "$HARNESS_SMOKE_REPORT_PATH" --json
+After writing the report, run this validation command yourself:
+PYTHONPATH="$HARNESS_SMOKE_REPO_ROOT" python3 -m harness_lab.chapter01 validate "$HARNESS_SMOKE_REPORT_PATH" --json
 
-If validation fails, fix the report and rerun validation until it passes.
+If validation fails, fix the artifact/report and rerun validation until it passes.
 EOF
 
-printf '\n=== Copilot smoke workspace ===\n%s\n' "$HARNESS_SMOKE_WORKSPACE"
-printf '\n=== Prompt file ===\n%s/copilot-smoke-prompt.md\n' "$HARNESS_SMOKE_WORKSPACE"
-printf '\nOpen a real terminal or tmux pane and run:\n\n'
-printf '  cd %q && copilot --experimental\n\n' "$HARNESS_SMOKE_WORKSPACE"
-printf 'Then paste or reference copilot-smoke-prompt.md inside Copilot CLI. If Autopilot mode is available, enable Autopilot mode so Copilot keeps working until the validator passes.\n'
-printf '\nWhen Copilot has written report.json, return here and press Enter.\n'
-read -r _
+# Optional but recommended for repeatable smoke runs: keep Copilot state separate
+# from your normal interactive ~/.copilot state. Remove this if you explicitly
+# want to reuse the logged-in default profile.
+export COPILOT_HOME="${COPILOT_HOME:-$HARNESS_SMOKE_WORKSPACE/.copilot-home}"
 
-python3 -m harness_lab.chapter01 validate "$HARNESS_SMOKE_REPORT_PATH" --json
+copilot \
+  -p "$(cat copilot-smoke-prompt.md)" \
+  -C "$HARNESS_SMOKE_WORKSPACE" \
+  --allow-all-tools \
+  --allow-all-paths \
+  --no-ask-user \
+  --no-auto-update \
+  --no-remote \
+  --stream off \
+  --output-format json \
+  --silent
+
+PYTHONPATH="$HARNESS_SMOKE_REPO_ROOT" \
+  python3 -m harness_lab.chapter01 validate "$HARNESS_SMOKE_REPORT_PATH" --json
 ```
 
 Make it executable:
 
 ```bash
-chmod +x smoke/chapter-01/agents/run_github_copilot_cli.sh
+chmod +x smoke/chapter-01/agents/run_github_copilot_cli_noninteractive.sh
 ```
 
 Run the live smoke:
@@ -230,33 +256,77 @@ Expected passing summary:
 
 If Copilot says it is done but the validator fails, the smoke fails. Fix the artifact or report; do not override the validator.
 
-## PTY-backed future adapter
+## Permission choices
 
-For unattended live smoke, the harness should grow a PTY execution mode. The manifest could eventually contain a field such as:
+The upstream help says `--allow-all-tools` is required for non-interactive mode. Without it, Copilot may need confirmation and the smoke run cannot continue.
 
-```json
-{
-  "pty": true,
-  "agent_command": ["copilot", "--experimental"]
-}
+This guide also uses:
+
+```bash
+--allow-all-paths
 ```
 
-The runner would then need to:
+Reason: the prompt includes absolute paths such as `$HARNESS_SMOKE_REPORT_PATH` and `$HARNESS_SMOKE_REPO_ROOT`. You may remove this flag if you rewrite the adapter so Copilot only touches files under the current workspace and never reads the repo root.
 
-1. allocate an interactive TTY;
-2. start `copilot --experimental` in `$HARNESS_SMOKE_WORKSPACE`;
-3. send the prompt from `copilot-smoke-prompt.md`;
-4. watch until the report file appears or a timeout expires;
-5. validate with `python3 -m harness_lab.chapter01 validate`.
+Additional safety flags:
 
-Do not fake this with plain `subprocess.run` unless the installed Copilot CLI version documents a non-interactive mode that works without a TTY.
+```bash
+--no-ask-user
+--no-auto-update
+--no-remote
+--stream off
+--output-format json
+--silent
+```
+
+- `--no-ask-user`: prevents the agent from trying to ask a human during a smoke run.
+- `--no-auto-update`: avoids changing the CLI version during a smoke run.
+- `--no-remote`: avoids remote session control during smoke.
+- `--stream off`: makes output easier to capture.
+- `--output-format json`: emits JSONL events for machine inspection.
+- `--silent`: keeps scripting output smaller.
+
+For stricter local runs, add deny rules after `--allow-all-tools`. Deny rules take precedence over allow rules according to `copilot help permissions`:
+
+```bash
+--deny-tool='shell(git push)' \
+--deny-tool='shell(gh pr create)' \
+--deny-tool='shell(gh pr merge)'
+```
+
+Do not use `--allow-all` or `--yolo` unless you intentionally want all tools, all paths, and all URLs approved.
+
+## Authentication for unattended runs
+
+For a real unattended smoke, prefer a token injected by the environment rather than storing credentials in the repo:
+
+```bash
+export COPILOT_GITHUB_TOKEN='[REDACTED]'
+```
+
+or:
+
+```bash
+export GH_TOKEN='[REDACTED]'
+```
+
+or:
+
+```bash
+export GITHUB_TOKEN='[REDACTED]'
+```
+
+Never commit token values. In docs and test fixtures, use `[REDACTED]`.
+
+If you use a dedicated `COPILOT_HOME`, remember that it may not contain your previous browser login. In that case, token-based auth is the cleaner path.
 
 ## Validation commands
 
 Validate the report directly:
 
 ```bash
-python3 -m harness_lab.chapter01 validate "$HARNESS_SMOKE_REPORT_PATH" --json
+PYTHONPATH="$HARNESS_SMOKE_REPO_ROOT" \
+  python3 -m harness_lab.chapter01 validate "$HARNESS_SMOKE_REPORT_PATH" --json
 ```
 
 Run the full smoke wrapper:
@@ -276,10 +346,11 @@ python3 -m harness_lab.smoke run smoke/chapter-01/manifest.json --json
 Use the JSON summary from the smoke runner:
 
 - `agent_exit_code != 0`: the Copilot adapter failed before validation.
-- `agent_timed_out: true`: the adapter waited too long, often because Copilot CLI required interaction.
+- `agent_timed_out: true`: Copilot exceeded the smoke timeout or waited on a permission/authentication issue.
 - `validator.failed > 0`: Copilot wrote a report, but the report did not satisfy the Chapter 01 contract.
 - validator error includes `evidence[0].type cannot be self_report`: Copilot produced only a claim of completion; ask it to create concrete file or validator evidence.
 - report file is missing: Copilot did not write `$HARNESS_SMOKE_REPORT_PATH` exactly.
+- output includes authentication failure: run `/login` interactively or provide `COPILOT_GITHUB_TOKEN`, `GH_TOKEN`, or `GITHUB_TOKEN` with Copilot Requests permission.
 
 ## Fallback path
 
