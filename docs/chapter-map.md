@@ -4,6 +4,8 @@ This document maps course chapters to verification artifacts.
 
 Current design rule: start with Chapter 01 only, use it as the pilot, and do not expand the full 12-chapter matrix until the Chapter 01 design has been reviewed.
 
+Source-grounding rule: this file is downstream of `docs/source-map.md`. A chapter entry should not be treated as ready for implementation unless the corresponding source claim, project interpretation, and verification hypothesis have first been recorded in `docs/source-map.md`.
+
 For each chapter, we will record:
 - the chapter claim
 - the failure mode the harness should expose
@@ -17,6 +19,9 @@ For each chapter, we will record:
 
 | Field | Draft |
 | --- | --- |
+| Source grounding | `docs/source-map.md`, Chapter 01 entry. |
+| Source title | 第一講. 模型能力強，不等於執行可靠 |
+| Source URL | https://walkinglabs.github.io/learn-harness-engineering/zh-TW/lectures/lecture-01-why-capable-agents-still-fail/ |
 | Chapter claim | A model or agent can be capable of solving a task in principle while still being unreliable as an engineering component unless its behavior is constrained and externally verified by a harness. |
 | Failure mode | The agent reports completion or produces plausible-looking output even though the required artifact is missing, malformed, incomplete, or not independently validated. |
 | Primary verification type | Deterministic verification. The first proof should not depend on LLM randomness or subjective output quality. |
@@ -25,6 +30,10 @@ For each chapter, we will record:
 | Fail criterion | Any of these fail: artifact missing, invalid schema, placeholder evidence, contradiction between reported success and validator result, or self-report without external evidence. |
 | Real-agent smoke test need | Yes, but only after the deterministic validator exists. The smoke test should run a tiny real-agent task and prove that success is decided by the validator, not by the agent's self-report. |
 | Downstream tasks shaped by this chapter | #3 should first build the deterministic validator around this contract. #4 should later wrap the same scenario as a bounded real-agent smoke test. #5 should include the Chapter 01 experiment as the first experiment case. |
+
+## Dependency note
+
+Issue #2 depends on the source-grounding gap tracked by #9. The Chapter 01 map can be reviewed only after `docs/source-material.md` and `docs/source-map.md` exist and clearly separate source claims from this repository's verification design choices.
 
 ## Open design questions for review
 

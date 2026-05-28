@@ -21,25 +21,51 @@ issues:
   - title: "Chapter 01 map: pilot the verification design"
     labels: ["area:docs", "priority:P0", "status:review"]
     status: "review"
+    depends_on:
+      - "Source grounding gap: record original article/course material"
     body: |
       Goal
       - Build the first concrete chapter-to-verification map for Chapter 01 only.
       - Use Chapter 01 as the pilot design before expanding the same pattern to the remaining chapters.
+      - Review the Chapter 01 map only after the source-grounding gap has been addressed.
 
       Scope
       - Chapter 01: Capability does not imply reliability.
       - Define the chapter claim, failure mode, verification type, minimal scenario, pass/fail rule, and smoke-test need.
       - Do not try to complete the full 12-chapter matrix in this issue.
+      - Treat docs/source-map.md as the upstream source-grounding record for this issue.
 
       Design intent
       - Chapter 01 is the calibration case for the whole verification lab.
       - Later tasks (#3 deterministic framework, #4 real-agent smoke harness, and #5 experiment set) should first be shaped around the Chapter 01 pilot so the design can be reviewed before being generalized.
+      - The map must distinguish source claims from this repo's engineering interpretation and validator design.
 
       Acceptance criteria
+      - docs/source-material.md records the source course and upstream references.
+      - docs/source-map.md contains the Chapter 01 source-claim → project-interpretation → verification-hypothesis mapping.
       - docs/chapter-map.md contains a concrete Chapter 01 verification entry.
       - The entry is specific enough to drive the first deterministic test design.
       - The entry identifies what should be handled by deterministic verification vs. real-agent smoke testing.
       - Open design questions are explicitly listed for review before expanding to other chapters.
+
+  - title: "Source grounding gap: record original article/course material"
+    labels: ["area:docs", "priority:P0", "status:done"]
+    status: "done"
+    body: |
+      Goal
+      - Record the source course material that this verification lab is based on.
+      - Prevent downstream issues from turning unverified assumptions into implementation work.
+
+      Scope
+      - Add source metadata and citation policy.
+      - Add a source-map pattern that separates source claims, project interpretation, and verification hypotheses.
+      - Ground Chapter 01 first; defer other chapters until reviewed.
+
+      Acceptance criteria
+      - docs/source-material.md exists and records the primary course URL plus upstream references listed by the course.
+      - docs/source-map.md contains the Chapter 01 source mapping.
+      - docs/chapter-map.md points to the source-map entry.
+      - Issue #2 is explicitly dependency-gated on this source-grounding work.
 
   - title: "Deterministic verification framework"
     labels: ["area:tests", "priority:P0", "status:ready"]
