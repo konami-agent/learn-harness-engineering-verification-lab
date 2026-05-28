@@ -38,7 +38,7 @@ This keeps the smoke harness testable even on machines where the Codex CLI or an
 
 ## GitHub Copilot CLI adapter
 
-For a complete GitHub Copilot CLI adapter method, including installation checks, the `gh copilot` copy-paste loop, live manifest shape, and the fallback path, see `docs/github-copilot-cli-smoke-agent.md`.
+For a complete GitHub Copilot CLI adapter method for the standalone `copilot` command from `github/copilot-cli`, including installation checks, interactive TTY requirements, live manifest shape, and the fallback path, see `docs/github-copilot-cli-smoke-agent.md`.
 
 ## Run the positive smoke scenario
 
