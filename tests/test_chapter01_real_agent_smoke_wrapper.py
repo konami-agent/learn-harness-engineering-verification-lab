@@ -88,7 +88,33 @@ class Chapter01RealAgentSmokeWrapperTest(unittest.TestCase):
             "external agent command",
             "success is still decided by `harness_lab.chapter01`",
             "python3 -m harness_lab.smoke run smoke/chapter-01/manifest.json",
+            "GitHub Copilot CLI adapter",
+            "docs/github-copilot-cli-smoke-agent.md",
         ]:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, text)
+
+    def test_github_copilot_cli_smoke_agent_guide_is_complete(self):
+        doc = ROOT / "smoke" / "chapter-01" / "docs" / "github-copilot-cli-smoke-agent.md"
+        self.assertTrue(doc.exists(), "missing GitHub Copilot CLI smoke agent guide")
+        text = doc.read_text(encoding="utf-8")
+        required_phrases = [
+            "GitHub Copilot CLI adapter",
+            "gh extension install github/gh-copilot",
+            "gh auth login",
+            "gh copilot --help",
+            "HARNESS_SMOKE_WORKSPACE",
+            "HARNESS_SMOKE_REPORT_PATH",
+            "HARNESS_SMOKE_SCENARIO_ID",
+            "copy-paste loop",
+            "report.json",
+            "python3 -m harness_lab.chapter01 validate",
+            "python3 -m harness_lab.smoke run smoke/chapter-01/manifest-github-copilot-cli.json",
+            "not a fully autonomous coding agent",
+            "do not use self_report evidence",
+            "fallback path",
+        ]
+        for phrase in required_phrases:
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, text)
 

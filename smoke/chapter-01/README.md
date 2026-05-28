@@ -36,6 +36,10 @@ A later Codex, Claude Code, or other real-agent adapter can reuse the same manif
 
 This keeps the smoke harness testable even on machines where the Codex CLI or another live agent is unavailable.
 
+## GitHub Copilot CLI adapter
+
+For a complete GitHub Copilot CLI adapter method, including installation checks, the `gh copilot` copy-paste loop, live manifest shape, and the fallback path, see `docs/github-copilot-cli-smoke-agent.md`.
+
 ## Run the positive smoke scenario
 
 ```bash
