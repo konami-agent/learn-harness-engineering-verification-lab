@@ -25,6 +25,28 @@ class Chapter01RealAgentSmokeWrapperTest(unittest.TestCase):
         self.assertEqual(manifest["expected_report"], "report.json")
         self.assertTrue(manifest.get("sandbox", {}).get("isolate_workspace"))
         self.assertLessEqual(manifest.get("timeout_seconds", 999), 30)
+        workspace_files = manifest.get("workspace_files", {})
+        self.assertIn("AGENTS.md", workspace_files)
+        self.assertIn("definition of done", workspace_files["AGENTS.md"])
+        self.assertIn("AGENTS.md", workspace_files.get("task.md", ""))
+
+    def test_runner_demonstrates_agents_md_as_harness_layer(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            summary = run_smoke_manifest(MANIFEST, workspace_root=Path(tmp))
+
+            self.assertTrue(summary["ok"], summary)
+            workspace = Path(summary["workspace"])
+            agents_file = workspace / "AGENTS.md"
+            compliance_artifact = workspace / "definition-of-done-check.txt"
+            report = json.loads(Path(summary["report_path"]).read_text(encoding="utf-8"))
+            evidence_details = "\n".join(item["detail"] for item in report["evidence"])
+
+            self.assertTrue(agents_file.exists())
+            self.assertTrue(compliance_artifact.exists())
+            self.assertIn("AGENTS.md", compliance_artifact.read_text(encoding="utf-8"))
+            self.assertIn("definition of done", compliance_artifact.read_text(encoding="utf-8"))
+            self.assertIn("AGENTS.md", evidence_details)
+            self.assertIn("definition-of-done-check.txt", evidence_details)
 
     def test_runner_executes_agent_in_isolated_workspace_and_validates_report(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -90,6 +112,8 @@ class Chapter01RealAgentSmokeWrapperTest(unittest.TestCase):
             "python3 -m harness_lab.smoke run smoke/chapter-01/manifest.json",
             "GitHub Copilot CLI adapter",
             "docs/github-copilot-cli-smoke-agent.md",
+            "AGENTS.md as the harness instruction layer",
+            "definition-of-done-check.txt",
         ]:
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, text)
@@ -124,6 +148,8 @@ class Chapter01RealAgentSmokeWrapperTest(unittest.TestCase):
             "python3 -m harness_lab.smoke run smoke/chapter-01/manifest-github-copilot-cli.json",
             "do not use self_report evidence",
             "fallback path",
+            "AGENTS.md as the authoritative harness instructions",
+            "definition-of-done-check.txt",
         ]
         for phrase in required_phrases:
             with self.subTest(phrase=phrase):

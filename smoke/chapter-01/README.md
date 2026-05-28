@@ -21,7 +21,7 @@ The important rule is unchanged from the deterministic experiment: success is st
 
 ## Manifests
 
-- `manifest.json`: positive smoke scenario. The external agent command writes concrete workspace evidence and a valid Chapter 01 report.
+- `manifest.json`: positive smoke scenario. The external agent command receives both `task.md` and `AGENTS.md`, treats AGENTS.md as the harness instruction layer, writes `definition-of-done-check.txt`, and then writes a valid Chapter 01 report.
 - `manifest-self-report-only.json`: negative smoke scenario. The external agent command exits successfully and writes a plausible report, but the report uses only self-report evidence, so the validator rejects it.
 
 ## Agent command adapter
@@ -79,9 +79,10 @@ python3 -m harness_lab.smoke run \
 
 This wrapper adds the real-agent execution layer that the deterministic Chapter 01 validator deliberately avoided.
 
-The experiment now has two layers:
+The experiment now has three layers:
 
-1. deterministic validator: decides whether a report satisfies the completion contract;
-2. real-agent smoke wrapper: runs an external agent command in a sandbox and feeds the resulting report to that validator.
+1. `AGENTS.md` harness instructions: define the workspace-local definition of done before the agent acts;
+2. deterministic validator: decides whether a report satisfies the completion contract;
+3. real-agent smoke wrapper: runs an external agent command in a sandbox and feeds the resulting report to that validator.
 
-That separation is the key Chapter 01 harness lesson. Agent execution is allowed to be messy, stochastic, or tool-driven. Completion is still decided by a reproducible external validator.
+That separation is the key Chapter 01 harness lesson. Agent execution is allowed to be messy, stochastic, or tool-driven. Completion is still decided by a reproducible external validator, and the agent's behavior is shaped by repo-local instructions instead of an underspecified prompt.

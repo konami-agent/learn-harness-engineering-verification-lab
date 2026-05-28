@@ -25,10 +25,10 @@ For each chapter, we will record:
 | Chapter claim | A model or agent can be capable of solving a task in principle while still being unreliable as an engineering component unless its behavior is constrained and externally verified by a harness. |
 | Failure mode | The agent reports completion or produces plausible-looking output even though the required artifact is missing, malformed, incomplete, or not independently validated. |
 | Primary verification type | Deterministic verification. The first proof should not depend on LLM randomness or subjective output quality. |
-| Minimal reproducible scenario | A task requires producing a concrete artifact with a machine-checkable contract, for example a JSON report containing required keys, schema-valid values, and evidence fields. The harness checks the artifact directly instead of trusting the agent's final message. |
+| Minimal reproducible scenario | A task requires producing a concrete artifact with a machine-checkable contract. The workspace includes `AGENTS.md` as the harness instruction layer: it supplies the definition of done before the agent acts. The agent must create `definition-of-done-check.txt` and a JSON report containing required keys, schema-valid values, and evidence fields. The harness checks the artifact directly instead of trusting the agent's final message. |
 | Pass criterion | The validator confirms that the expected artifact exists, parses successfully, satisfies the schema, and contains evidence tied to the task result. |
 | Fail criterion | Any of these fail: artifact missing, invalid schema, placeholder evidence, contradiction between reported success and validator result, or self-report without external evidence. |
-| Real-agent smoke test need | Done for Chapter 01: `smoke/chapter-01/manifest.json` runs an external agent command in an isolated workspace, then validates the resulting report with `harness_lab.chapter01`. |
+| Real-agent smoke test need | Done for Chapter 01: `smoke/chapter-01/manifest.json` runs an external agent command in an isolated workspace containing `AGENTS.md`, then validates the resulting report with `harness_lab.chapter01`. |
 | Downstream tasks shaped by this chapter | #3 built the deterministic validator around this contract. #4 wraps the same scenario as a bounded smoke test. #5 includes the Chapter 01 experiment as the first experiment case. |
 
 ## Dependency note
@@ -40,7 +40,8 @@ Issue #2 depends on the source-grounding gap tracked by #9. The Chapter 01 map c
 1. First machine-checkable artifact: JSON report.
 2. Fixture coverage: include one positive case and three negative cases from the start.
 3. Evidence strictness: reject missing artifacts, placeholder evidence, skipped checks, broken evidence references, and self-report-only evidence.
-4. Smoke-test boundary: the deterministic scenario is now stable enough for a later real-agent smoke wrapper, but no real-agent runtime is required for the Chapter 01 deterministic proof.
+4. Smoke-test boundary: the deterministic scenario is now stable enough for live real-agent adapters; the committed smoke uses deterministic adapters by default, while optional adapters such as GitHub Copilot CLI can reuse the same `AGENTS.md` + report contract.
+5. `AGENTS.md` role: for Chapter 01, `AGENTS.md` is intentionally part of the smoke workspace to demonstrate that reliability improves when the harness supplies explicit instructions and a definition of done before validation.
 
 ## Deferred chapters
 

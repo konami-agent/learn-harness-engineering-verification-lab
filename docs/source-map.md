@@ -23,6 +23,7 @@ The chapter frames many failures as harness problems rather than immediate evide
 - Benchmark success does not directly imply reliability on messy everyday engineering tasks.
 - Agent self-reports such as “completed” are not enough; independent verification is required.
 - Common failure causes include incomplete task specifications, missing project conventions, broken or unclear environments, absent validation commands, and lost cross-session state.
+- Workspace instructions such as `AGENTS.md` are treated as a harness layer: they turn implicit project conventions and definitions of done into explicit agent-facing context before execution.
 - When an agent fails, first diagnose which harness layer is missing or weak before concluding that the model is incapable.
 - A definition of done should be command-verifiable, for example tests, lint, type checks, or another explicit validator.
 
@@ -30,7 +31,7 @@ The chapter frames many failures as harness problems rather than immediate evide
 
 For this verification lab, Chapter 01 becomes the claim that an agent's apparent capability and success narrative must be separated from externally verifiable completion.
 
-A harness should therefore make completion observable and machine-checkable. The repo should not accept the agent's final message as evidence. It should require concrete artifacts and deterministic validators.
+A harness should therefore make completion observable and machine-checkable. The repo should not accept the agent's final message as evidence. It should require explicit workspace instructions, concrete artifacts, and deterministic validators.
 
 ### Verification hypothesis
 

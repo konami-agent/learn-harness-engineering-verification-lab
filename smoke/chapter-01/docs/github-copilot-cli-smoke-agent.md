@@ -113,20 +113,20 @@ Minimum report shape:
   "claimed_status": "completed",
   "artifact": {
     "kind": "json-report",
-    "path": "evidence.txt"
+    "path": "definition-of-done-check.txt"
   },
   "evidence": [
     {
-      "id": "evidence:file:evidence-txt",
+      "id": "evidence:file:definition-of-done-check",
       "type": "file",
-      "detail": "GitHub Copilot CLI created evidence.txt in the isolated smoke workspace."
+      "detail": "GitHub Copilot CLI created definition-of-done-check.txt after following AGENTS.md as the authoritative harness instructions."
     }
   ],
   "checks": [
     {
       "name": "external-artifact-present",
       "status": "passed",
-      "evidence_ref": "evidence:file:evidence-txt"
+      "evidence_ref": "evidence:file:definition-of-done-check"
     }
   ]
 }
@@ -162,7 +162,8 @@ Create `smoke/chapter-01/manifest-github-copilot-cli.json`:
   },
   "expected_report": "report.json",
   "workspace_files": {
-    "task.md": "Create evidence.txt and a Chapter 01 report.json. The report must reference concrete file evidence and must not rely on self_report evidence."
+    "AGENTS.md": "# Chapter 01 smoke harness instructions\n\nUse AGENTS.md as the authoritative harness instructions.\n\nDefinition of done:\n- Read task.md before acting.\n- Create definition-of-done-check.txt.\n- The artifact must explicitly mention AGENTS.md and the definition of done.\n- Write report.json to HARNESS_SMOKE_REPORT_PATH.\n- Do not use self_report evidence.\n",
+    "task.md": "Use AGENTS.md as the authoritative harness instructions. Demonstrate Chapter 01 by creating definition-of-done-check.txt and a report.json that references concrete file evidence, not self_report evidence."
   },
   "agent_command": [
     "bash",
@@ -191,16 +192,18 @@ Isolated workspace:
 $HARNESS_SMOKE_WORKSPACE
 
 Task:
-1. Read task.md.
-2. Create concrete evidence in this workspace, for example evidence.txt.
-3. Write a valid Chapter 01 JSON report to this exact path:
+1. Read AGENTS.md as the authoritative harness instructions.
+2. Read task.md.
+3. Create concrete evidence in this workspace: definition-of-done-check.txt.
+4. definition-of-done-check.txt must explicitly mention AGENTS.md and the definition of done.
+5. Write a valid Chapter 01 JSON report to this exact path:
    $HARNESS_SMOKE_REPORT_PATH
 
 Report requirements:
 - task_id: $HARNESS_SMOKE_SCENARIO_ID
 - chapter: 01
 - claimed_status: completed
-- artifact.path should point to a concrete workspace artifact such as evidence.txt
+- artifact.path should point to a concrete workspace artifact such as definition-of-done-check.txt
 - evidence must be file, command, validator, or similarly external evidence
 - do not use self_report evidence
 - keep all side effects inside the isolated workspace
