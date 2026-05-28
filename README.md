@@ -7,9 +7,18 @@ Goal:
 - Distinguish between deterministic harness verification and real-agent smoke testing.
 - Track the project entirely through GitHub Issues with explicit status labels.
 
+Current Chapter 01 deliverables:
+- `docs/source-material.md` records the source course and citation policy.
+- `docs/source-map.md` maps Chapter 01 source claims to project interpretations and verification hypotheses.
+- `docs/chapter-map.md` records the Chapter 01 verification design.
+- `harness_lab/chapter01.py` implements the Chapter 01 deterministic validator.
+- `experiments/chapter-01/fixtures` contains one positive fixture and three negative fixtures for the Chapter 01 experiment.
+- `tests/` contains executable checks for the validator, fixtures, CLI, and documentation contract.
+
 Planned structure:
-- `docs/` — chapter map, experiment notes, and verification criteria
+- `docs/` — chapter map, experiment notes, source grounding, and verification criteria
 - `experiments/` — one folder per chapter / claim
+- `harness_lab/` — deterministic validators and supporting code
 - `smoke/` — small real-agent scenarios
 - `tests/` — deterministic verification suite
 - `reports/` — generated summaries from runs
@@ -20,5 +29,17 @@ Status model:
 - `status:blocked`
 - `status:review`
 - `status:done`
+
+Run local verification:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+Run the Chapter 01 validator manually:
+
+```bash
+python3 -m harness_lab.chapter01 validate experiments/chapter-01/fixtures/positive/report.json --json
+```
 
 This repo is intended to be public.

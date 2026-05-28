@@ -1,0 +1,28 @@
+{
+  "task_id": "chapter-01-positive-case",
+  "chapter": "01",
+  "claimed_status": "completed",
+  "artifact": {
+    "kind": "json-report",
+    "path": "experiments/chapter-01/fixtures/positive/report.json"
+  },
+  "evidence": [
+    {
+      "id": "evidence:file:report",
+      "type": "file",
+      "detail": "The report artifact exists at experiments/chapter-01/fixtures/positive/report.json and can be parsed as JSON."
+    },
+    {
+      "id": "evidence:validator:chapter01",
+      "type": "validator",
+      "detail": "The deterministic Chapter 01 validator confirms the artifact contract without trusting an agent final message."
+    }
+  ],
+  "checks": [
+    {
+      "name": "artifact-contract",
+      "status": "passed",
+      "evidence_ref": "evidence:validator:chapter01"
+    }
+  ]
+}

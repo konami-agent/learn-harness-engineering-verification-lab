@@ -35,12 +35,12 @@ For each chapter, we will record:
 
 Issue #2 depends on the source-grounding gap tracked by #9. The Chapter 01 map can be reviewed only after `docs/source-material.md` and `docs/source-map.md` exist and clearly separate source claims from this repository's verification design choices.
 
-## Open design questions for review
+## Design decisions after Chapter 01 implementation
 
-1. What should the first machine-checkable artifact be: JSON report, file tree mutation, test file, or command output?
-2. Should Chapter 01 include both a positive case and a negative/self-report-only case from the start?
-3. How strict should the evidence field be in the first validator?
-4. Should the smoke test use the same scenario as the deterministic test, or a slightly more realistic task with the same contract?
+1. First machine-checkable artifact: JSON report.
+2. Fixture coverage: include one positive case and three negative cases from the start.
+3. Evidence strictness: reject missing artifacts, placeholder evidence, skipped checks, broken evidence references, and self-report-only evidence.
+4. Smoke-test boundary: the deterministic scenario is now stable enough for a later real-agent smoke wrapper, but no real-agent runtime is required for the Chapter 01 deterministic proof.
 
 ## Deferred chapters
 

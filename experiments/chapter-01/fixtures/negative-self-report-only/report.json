@@ -1,0 +1,23 @@
+{
+  "task_id": "chapter-01-negative-self-report-only",
+  "chapter": "01",
+  "claimed_status": "completed",
+  "artifact": {
+    "kind": "json-report",
+    "path": "experiments/chapter-01/fixtures/negative-self-report-only/report.json"
+  },
+  "evidence": [
+    {
+      "id": "evidence:self-report",
+      "type": "self_report",
+      "detail": "The agent said the work was completed."
+    }
+  ],
+  "checks": [
+    {
+      "name": "artifact-contract",
+      "status": "passed",
+      "evidence_ref": "evidence:self-report"
+    }
+  ]
+}

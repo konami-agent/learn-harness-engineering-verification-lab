@@ -1,0 +1,23 @@
+{
+  "task_id": "chapter-01-negative-placeholder-evidence",
+  "chapter": "01",
+  "claimed_status": "completed",
+  "artifact": {
+    "kind": "json-report",
+    "path": "experiments/chapter-01/fixtures/negative-placeholder-evidence/report.json"
+  },
+  "evidence": [
+    {
+      "id": "evidence:file:report",
+      "type": "file",
+      "detail": "TODO"
+    }
+  ],
+  "checks": [
+    {
+      "name": "artifact-contract",
+      "status": "passed",
+      "evidence_ref": "evidence:file:report"
+    }
+  ]
+}
