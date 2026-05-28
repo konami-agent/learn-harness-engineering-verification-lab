@@ -1,0 +1,17 @@
+{
+  "id": "chapter-01-real-agent-smoke",
+  "chapter": "01",
+  "description": "Run an external agent command in an isolated workspace and validate its Chapter 01 report with the deterministic validator.",
+  "timeout_seconds": 10,
+  "sandbox": {
+    "isolate_workspace": true
+  },
+  "expected_report": "report.json",
+  "workspace_files": {
+    "task.md": "Create a Chapter 01 completion report. Do not rely on self-report as evidence; write concrete external evidence and checks."
+  },
+  "agent_command": [
+    "python3",
+    "{repo_root}/smoke/chapter-01/agents/write_valid_report.py"
+  ]
+}

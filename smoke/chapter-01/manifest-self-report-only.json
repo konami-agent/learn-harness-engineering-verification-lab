@@ -1,0 +1,17 @@
+{
+  "id": "chapter-01-self-report-only-smoke",
+  "chapter": "01",
+  "description": "Negative smoke fixture: the external agent writes a report that claims completion but uses only self-report evidence.",
+  "timeout_seconds": 10,
+  "sandbox": {
+    "isolate_workspace": true
+  },
+  "expected_report": "report.json",
+  "workspace_files": {
+    "task.md": "Create a Chapter 01 completion report. This negative fixture intentionally writes self-report-only evidence."
+  },
+  "agent_command": [
+    "python3",
+    "{repo_root}/smoke/chapter-01/agents/write_self_report_only.py"
+  ]
+}

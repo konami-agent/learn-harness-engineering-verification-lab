@@ -13,7 +13,9 @@ Current Chapter 01 deliverables:
 - `docs/chapter-map.md` records the Chapter 01 verification design.
 - `harness_lab/chapter01.py` implements the Chapter 01 deterministic validator.
 - `experiments/chapter-01/fixtures` contains one positive fixture and three negative fixtures for the Chapter 01 experiment.
-- `tests/` contains executable checks for the validator, fixtures, CLI, and documentation contract.
+- `smoke/chapter-01/manifest.json` defines the first sandboxed real-agent smoke wrapper for Chapter 01.
+- `harness_lab/smoke.py` runs external agent commands in isolated workspaces and validates their reports with the deterministic validator.
+- `tests/` contains executable checks for the validator, fixtures, smoke wrapper, CLI, and documentation contract.
 
 Planned structure:
 - `docs/` — chapter map, experiment notes, source grounding, and verification criteria
@@ -40,6 +42,12 @@ Run the Chapter 01 validator manually:
 
 ```bash
 python3 -m harness_lab.chapter01 validate experiments/chapter-01/fixtures/positive/report.json --json
+```
+
+Run the Chapter 01 smoke wrapper:
+
+```bash
+python3 -m harness_lab.smoke run smoke/chapter-01/manifest.json --json
 ```
 
 This repo is intended to be public.

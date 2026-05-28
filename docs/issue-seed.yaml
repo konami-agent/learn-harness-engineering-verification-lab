@@ -87,8 +87,8 @@ issues:
       - Chapter 01 positive and negative fixtures are covered by tests.
 
   - title: "Real-agent smoke test harness"
-    labels: ["area:smoke", "priority:P1", "status:ready"]
-    status: "ready"
+    labels: ["area:smoke", "priority:P1", "status:done"]
+    status: "done"
     body: |
       Goal
       - Add a small set of real-agent smoke tests that validate the end-to-end engineering loop under sandboxed conditions.
@@ -102,6 +102,9 @@ issues:
       - Each smoke scenario has a manifest, runner, validator, and isolated workspace.
       - Tasks are short and sandboxed.
       - Results are recorded and reproducible.
+      - Chapter 01 smoke manifest exists at `smoke/chapter-01/manifest.json`.
+      - Smoke runner exists at `harness_lab/smoke.py`.
+      - Positive and self-report-only negative smoke scenarios are covered by tests.
 
   - title: "Chapter 1-4 experiment set"
     labels: ["area:experiments", "chapter:01", "chapter:02", "chapter:03", "chapter:04", "priority:P1", "status:ready"]

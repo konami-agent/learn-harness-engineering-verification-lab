@@ -28,8 +28,8 @@ For each chapter, we will record:
 | Minimal reproducible scenario | A task requires producing a concrete artifact with a machine-checkable contract, for example a JSON report containing required keys, schema-valid values, and evidence fields. The harness checks the artifact directly instead of trusting the agent's final message. |
 | Pass criterion | The validator confirms that the expected artifact exists, parses successfully, satisfies the schema, and contains evidence tied to the task result. |
 | Fail criterion | Any of these fail: artifact missing, invalid schema, placeholder evidence, contradiction between reported success and validator result, or self-report without external evidence. |
-| Real-agent smoke test need | Yes, but only after the deterministic validator exists. The smoke test should run a tiny real-agent task and prove that success is decided by the validator, not by the agent's self-report. |
-| Downstream tasks shaped by this chapter | #3 should first build the deterministic validator around this contract. #4 should later wrap the same scenario as a bounded real-agent smoke test. #5 should include the Chapter 01 experiment as the first experiment case. |
+| Real-agent smoke test need | Done for Chapter 01: `smoke/chapter-01/manifest.json` runs an external agent command in an isolated workspace, then validates the resulting report with `harness_lab.chapter01`. |
+| Downstream tasks shaped by this chapter | #3 built the deterministic validator around this contract. #4 wraps the same scenario as a bounded smoke test. #5 includes the Chapter 01 experiment as the first experiment case. |
 
 ## Dependency note
 
