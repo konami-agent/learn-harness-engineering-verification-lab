@@ -18,20 +18,28 @@ issues:
       - A board/status scheme is documented.
       - Labels exist for status and priority.
 
-  - title: "Chapter map: convert the course into verifiable claims"
-    labels: ["area:docs", "priority:P0", "status:ready"]
-    status: "ready"
+  - title: "Chapter 01 map: pilot the verification design"
+    labels: ["area:docs", "priority:P0", "status:review"]
+    status: "review"
     body: |
       Goal
-      - Map each chapter of Learn Harness Engineering to one or more verifiable artifacts.
+      - Build the first concrete chapter-to-verification map for Chapter 01 only.
+      - Use Chapter 01 as the pilot design before expanding the same pattern to the remaining chapters.
 
       Scope
-      - One row per chapter.
-      - For each chapter: claim, verification type, minimal scenario, pass/fail rule, smoke-test need.
+      - Chapter 01: Capability does not imply reliability.
+      - Define the chapter claim, failure mode, verification type, minimal scenario, pass/fail rule, and smoke-test need.
+      - Do not try to complete the full 12-chapter matrix in this issue.
+
+      Design intent
+      - Chapter 01 is the calibration case for the whole verification lab.
+      - Later tasks (#3 deterministic framework, #4 real-agent smoke harness, and #5 experiment set) should first be shaped around the Chapter 01 pilot so the design can be reviewed before being generalized.
 
       Acceptance criteria
-      - A chapter-to-verification table exists.
-      - Each chapter has a clear verification strategy.
+      - docs/chapter-map.md contains a concrete Chapter 01 verification entry.
+      - The entry is specific enough to drive the first deterministic test design.
+      - The entry identifies what should be handled by deterministic verification vs. real-agent smoke testing.
+      - Open design questions are explicitly listed for review before expanding to other chapters.
 
   - title: "Deterministic verification framework"
     labels: ["area:tests", "priority:P0", "status:ready"]
