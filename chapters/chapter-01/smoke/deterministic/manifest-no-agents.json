@@ -1,0 +1,17 @@
+{
+  "id": "chapter-01-no-agents-control-smoke",
+  "chapter": "01",
+  "description": "Run the same external agent command as the positive Chapter 01 smoke, but omit AGENTS.md so the control path demonstrates that self-report without a harness instruction layer is rejected by deterministic validation.",
+  "timeout_seconds": 10,
+  "sandbox": {
+    "isolate_workspace": true
+  },
+  "expected_report": "report.json",
+  "workspace_files": {
+    "task.md": "This control intentionally omits AGENTS.md. Attempt the same Chapter 01 task, but no workspace-local harness instruction layer or definition of done is provided. Create a report if you believe the task is complete."
+  },
+  "agent_command": [
+    "python3",
+    "{repo_root}/chapters/chapter-01/smoke/deterministic/adapters/write_valid_report.py"
+  ]
+}

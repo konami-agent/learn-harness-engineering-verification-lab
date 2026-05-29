@@ -33,7 +33,7 @@ issues:
       - Chapter 01: Capability does not imply reliability.
       - Define the chapter claim, failure mode, verification type, minimal scenario, pass/fail rule, and smoke-test need.
       - Do not try to complete the full 12-chapter matrix in this issue.
-      - Treat docs/source-map.md as the upstream source-grounding record for this issue.
+      - Treat chapters/chapter-01/lesson-map.md as the upstream source-grounding record for this issue.
 
       Design intent
       - Chapter 01 is the calibration case for the whole verification lab.
@@ -41,8 +41,8 @@ issues:
       - The map must distinguish source claims from this repo's engineering interpretation and validator design.
 
       Acceptance criteria
-      - docs/source-material.md records the source course and upstream references.
-      - docs/source-map.md contains the Chapter 01 source-claim → project-interpretation → verification-hypothesis mapping.
+      - chapters/chapter-01/source.md records the source course and upstream references.
+      - chapters/chapter-01/lesson-map.md contains the Chapter 01 source-claim → project-interpretation → verification-hypothesis mapping.
       - docs/chapter-map.md contains a concrete Chapter 01 verification entry.
       - The entry is specific enough to drive the first deterministic test design.
       - The entry identifies what should be handled by deterministic verification vs. real-agent smoke testing.
@@ -62,8 +62,8 @@ issues:
       - Ground Chapter 01 first; defer other chapters until reviewed.
 
       Acceptance criteria
-      - docs/source-material.md exists and records the primary course URL plus upstream references listed by the course.
-      - docs/source-map.md contains the Chapter 01 source mapping.
+      - chapters/chapter-01/source.md exists and records the primary course URL plus upstream references listed by the course.
+      - chapters/chapter-01/lesson-map.md contains the Chapter 01 source mapping.
       - docs/chapter-map.md points to the source-map entry.
       - Issue #2 is explicitly dependency-gated on this source-grounding work.
 
@@ -82,7 +82,7 @@ issues:
       - Test harness supports reproducible scenario execution.
       - Each scenario has clear expected outcomes.
       - Test results can be summarized in reports.
-      - Chapter 01 validator exists at `harness_lab/chapter01.py`.
+      - Chapter 01 validator exists at `harness_lab/validators/chapter01.py`.
       - Chapter 01 CLI can validate reports and write a JSON summary file.
       - Chapter 01 positive and negative fixtures are covered by tests.
 
@@ -102,7 +102,7 @@ issues:
       - Each smoke scenario has a manifest, runner, validator, and isolated workspace.
       - Tasks are short and sandboxed.
       - Results are recorded and reproducible.
-      - Chapter 01 smoke manifest exists at `smoke/chapter-01/manifest.json`.
+      - Chapter 01 smoke manifest exists at `chapters/chapter-01/smoke/deterministic/manifest-with-agents.json`.
       - Smoke runner exists at `harness_lab/smoke.py`.
       - Positive and self-report-only negative smoke scenarios are covered by tests.
 
@@ -122,8 +122,8 @@ issues:
       Acceptance criteria
       - Each chapter has at least one minimal experiment.
       - Each experiment has an objective, setup, and pass/fail rule.
-      - Chapter 01 experiment fixtures exist under `experiments/chapter-01/fixtures/`.
-      - Chapter 01 experiment documentation exists at `experiments/chapter-01/README.md`.
+      - Chapter 01 experiment fixtures exist under `chapters/chapter-01/fixtures/`.
+      - Chapter 01 experiment documentation exists at `chapters/chapter-01/README.md`.
 
   - title: "Chapter 5-8 experiment set"
     labels: ["area:experiments", "chapter:05", "chapter:06", "chapter:07", "chapter:08", "priority:P1", "status:ready"]

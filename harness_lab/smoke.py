@@ -8,7 +8,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from harness_lab.chapter01 import validate_many
+from harness_lab.validators.chapter01 import validate_many
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]

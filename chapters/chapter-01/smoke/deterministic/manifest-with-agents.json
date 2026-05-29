@@ -1,0 +1,18 @@
+{
+  "id": "chapter-01-real-agent-smoke",
+  "chapter": "01",
+  "description": "Run an external agent command in an isolated workspace, require it to follow AGENTS.md as the harness instruction layer, and validate its Chapter 01 report with the deterministic validator.",
+  "timeout_seconds": 10,
+  "sandbox": {
+    "isolate_workspace": true
+  },
+  "expected_report": "report.json",
+  "workspace_files": {
+    "AGENTS.md": "# Chapter 01 smoke harness instructions\n\nThis file is the harness instruction layer for the real-agent smoke.\n\nDefinition of done:\n- Read task.md before acting.\n- Create definition-of-done-check.txt in this workspace.\n- The artifact must explicitly mention AGENTS.md and the definition of done.\n- Write report.json to the path provided by HARNESS_SMOKE_REPORT_PATH.\n- The report must reference concrete file evidence, not self_report evidence.\n",
+    "task.md": "Use AGENTS.md as the authoritative harness instructions for this workspace. Demonstrate Chapter 01's lesson: a capable agent is not reliable unless the harness supplies a definition of done and an external validator checks the resulting artifact. Create the required artifact and report."
+  },
+  "agent_command": [
+    "python3",
+    "{repo_root}/chapters/chapter-01/smoke/deterministic/adapters/write_valid_report.py"
+  ]
+}
