@@ -2,7 +2,7 @@
 
 ## Chapter 01 chapter-oriented layout
 
-Chapter 01 was reorganized from a technology-type layout into a learning-first layout.
+Chapter 01 was reorganized from a technology-type layout into a verification-companion layout.
 
 Old locations:
 

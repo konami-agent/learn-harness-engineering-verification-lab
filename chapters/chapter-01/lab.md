@@ -1,6 +1,10 @@
-# Chapter 01 Exercise
+# Chapter 01 Verification Lab
 
-This exercise is the hands-on path for Chapter 01: capability does not imply reliability. A harness must define the task boundary, require concrete evidence, and validate the result outside the agent's final message.
+This is the local verification lab for Chapter 01. It does not replace the upstream Project 01 exercise.
+
+Read the course there. Run verification labs here.
+
+Upstream Project 01 is the learning exercise. It asks learners to compare a weak harness starter setup with a stronger harness solution setup. This local lab is narrower: it runs deterministic checks that prove the harness rejects weak completion evidence.
 
 Run commands from the repository root.
 
@@ -16,6 +20,7 @@ python3 -m harness_lab.validators.chapter01 validate \
 ```
 
 Expected shape:
+
 - total: 4
 - passed: 1
 - failed: 3
@@ -28,7 +33,7 @@ Read `expected-results.md` for the specific error each negative fixture should p
 python3 -m harness_lab.smoke run chapters/chapter-01/smoke/deterministic/manifest-with-agents.json --json
 ```
 
-This is CI-safe. It uses a deterministic Python adapter, not Copilot. The important behavior is that the workspace contains `AGENTS.md`, the adapter creates `definition-of-done-check.txt`, and the validator accepts concrete evidence.
+This deterministic smoke is CI-safe. It uses a deterministic Python adapter, not Copilot. The important behavior is that the workspace contains `AGENTS.md`, the adapter creates `definition-of-done-check.txt`, and the deterministic validator accepts concrete evidence.
 
 ## 3. Run the no-AGENTS.md control
 
@@ -52,7 +57,16 @@ This is another expected failure. It demonstrates that a successful agent proces
 python3 -m harness_lab.smoke run chapters/chapter-01/smoke/live/github-copilot-cli/manifest.json --json
 ```
 
-This path actually invokes the standalone `copilot` CLI through `chapters/chapter-01/smoke/live/github-copilot-cli/run.sh`. It is opt-in because it depends on local installation, authentication, network access, and Copilot quota/subscription availability.
+This live GitHub Copilot CLI smoke path actually invokes the standalone `copilot` CLI through `chapters/chapter-01/smoke/live/github-copilot-cli/run.sh`. It is opt-in because it depends on local installation, authentication, network access, and Copilot quota/subscription availability.
+
+## Relationship to upstream Project 01
+
+After running this local lab, the broader manual exercise remains upstream:
+
+- run or inspect upstream `projects/project-01/starter/` for the weak-harness scenario;
+- run or inspect upstream `projects/project-01/solution/` for the stronger harness scenario;
+- compare the qualitative and quantitative outcomes described by upstream Project 01;
+- return here only when you want executable validators and smoke contracts for a smaller claim.
 
 ## Reflection questions
 
@@ -60,3 +74,4 @@ This path actually invokes the standalone `copilot` CLI through `chapters/chapte
 - Which failures are caused by untrusted self-report evidence?
 - What changes when `AGENTS.md` is present in the smoke workspace?
 - Why does the validator, rather than the agent final message, decide whether the task is complete?
+- Which upstream Project 01 observations are still manual observation rather than deterministic proof?

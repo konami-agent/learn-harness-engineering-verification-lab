@@ -33,7 +33,7 @@ issues:
       - Chapter 01: Capability does not imply reliability.
       - Define the chapter claim, failure mode, verification type, minimal scenario, pass/fail rule, and smoke-test need.
       - Do not try to complete the full 12-chapter matrix in this issue.
-      - Treat chapters/chapter-01/lesson-map.md as the upstream source-grounding record for this issue.
+      - Treat chapters/chapter-01/verification-map.md as the upstream source-grounding record for this issue.
 
       Design intent
       - Chapter 01 is the calibration case for the whole verification lab.
@@ -42,7 +42,7 @@ issues:
 
       Acceptance criteria
       - chapters/chapter-01/source.md records the source course and upstream references.
-      - chapters/chapter-01/lesson-map.md contains the Chapter 01 source-claim → project-interpretation → verification-hypothesis mapping.
+      - chapters/chapter-01/verification-map.md contains the Chapter 01 source-claim → project-interpretation → verification-hypothesis mapping.
       - docs/chapter-map.md contains a concrete Chapter 01 verification entry.
       - The entry is specific enough to drive the first deterministic test design.
       - The entry identifies what should be handled by deterministic verification vs. real-agent smoke testing.
@@ -63,7 +63,7 @@ issues:
 
       Acceptance criteria
       - chapters/chapter-01/source.md exists and records the primary course URL plus upstream references listed by the course.
-      - chapters/chapter-01/lesson-map.md contains the Chapter 01 source mapping.
+      - chapters/chapter-01/verification-map.md contains the Chapter 01 source mapping.
       - docs/chapter-map.md points to the source-map entry.
       - Issue #2 is explicitly dependency-gated on this source-grounding work.
 

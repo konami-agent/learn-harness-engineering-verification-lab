@@ -1,21 +1,36 @@
 # Learn Harness Engineering Verification Lab
 
-This repository is a verification-focused companion to the Learn Harness Engineering course.
+This repository is an executable verification companion to the upstream course `walkinglabs/learn-harness-engineering`:
 
-Goal:
-- Turn each chapter's core claim into a reproducible experiment, test, or smoke scenario.
-- Distinguish deterministic harness verification from live real-agent smoke testing.
-- Keep the repo readable for practice: start from a chapter folder, then inspect shared harness code only when needed.
-- Track project work through GitHub Issues with explicit status labels.
+https://github.com/walkinglabs/learn-harness-engineering
 
-## Chapter 01 learning path
+Read the course there. Run verification labs here.
+
+This repo does not replace the upstream course. The upstream repository remains the source of truth for curriculum, lectures, exercises, projects, templates, and learning sequence. This repository turns selected upstream claims into reproducible validators, deterministic smoke scenarios, live-agent smoke contracts, and regression tests.
+
+## Repository role
+
+Upstream course:
+- explains Harness Engineering concepts;
+- provides Traditional Chinese lectures under `docs/zh-TW/`;
+- provides projects such as Project 01 baseline-vs-minimal-harness;
+- provides reusable templates such as `AGENTS.md`, `init.sh`, and `feature_list.json`.
+
+This verification lab:
+- maps upstream source claims to verification hypotheses;
+- implements deterministic validators and fixtures;
+- runs CI-safe smoke scenarios;
+- keeps opt-in live-agent smoke adapters separate from deterministic tests;
+- records what remains manual observation rather than pretending every learning claim is already mechanically proven.
+
+## Chapter 01 verification lab path
 
 Start here:
 
-1. `chapters/chapter-01/README.md` — chapter overview and concept map.
-2. `chapters/chapter-01/source.md` — source grounding and citation policy for the chapter.
-3. `chapters/chapter-01/lesson-map.md` — source claim → verification hypothesis mapping.
-4. `chapters/chapter-01/exercise.md` — hands-on commands to run while practicing.
+1. `chapters/chapter-01/README.md` — verification lab overview and boundary with upstream Lecture 01 / Project 01.
+2. `chapters/chapter-01/source.md` — source grounding and upstream URLs.
+3. `chapters/chapter-01/verification-map.md` — source claim → verification hypothesis → implemented artifact mapping.
+4. `chapters/chapter-01/lab.md` — local verification lab commands.
 5. `chapters/chapter-01/expected-results.md` — expected pass/fail outcomes for each command.
 
 Chapter 01 deliverables:
@@ -28,7 +43,7 @@ Chapter 01 deliverables:
 
 ## Repository layout
 
-- `chapters/` — learning-first chapter folders: source notes, lesson maps, exercises, fixtures, and smoke scenarios.
+- `chapters/` — chapter-oriented verification lab folders: source notes, verification maps, lab commands, fixtures, and smoke scenarios.
 - `harness_lab/` — reusable harness code, smoke runner, and validators.
 - `harness_lab/validators/` — canonical validator implementations.
 - `tests/` — engineering tests; chapter-specific tests live under `tests/chapter_01/`, `tests/chapter_02/`, etc.

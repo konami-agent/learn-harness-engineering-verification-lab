@@ -4,7 +4,7 @@ This document maps course chapters to verification artifacts.
 
 Current design rule: start with Chapter 01 only, use it as the pilot, and do not expand the full 12-chapter matrix until the Chapter 01 design has been reviewed.
 
-Source-grounding rule: this file is downstream of `chapters/chapter-01/lesson-map.md`. A chapter entry should not be treated as ready for implementation unless the corresponding source claim, project interpretation, and verification hypothesis have first been recorded in `chapters/chapter-01/lesson-map.md`.
+Source-grounding rule: this file is downstream of `chapters/chapter-01/verification-map.md`. A chapter entry should not be treated as ready for implementation unless the corresponding source claim, project interpretation, and verification hypothesis have first been recorded in `chapters/chapter-01/verification-map.md`.
 
 For each chapter, we will record:
 - the chapter claim
@@ -19,7 +19,7 @@ For each chapter, we will record:
 
 | Field | Draft |
 | --- | --- |
-| Source grounding | `chapters/chapter-01/lesson-map.md`, Chapter 01 entry. |
+| Source grounding | `chapters/chapter-01/verification-map.md`, Chapter 01 entry. |
 | Source title | 第一講. 模型能力強，不等於執行可靠 |
 | Source URL | https://walkinglabs.github.io/learn-harness-engineering/zh-TW/lectures/lecture-01-why-capable-agents-still-fail/ |
 | Chapter claim | A model or agent can be capable of solving a task in principle while still being unreliable as an engineering component unless its behavior is constrained and externally verified by a harness. |
@@ -33,7 +33,7 @@ For each chapter, we will record:
 
 ## Dependency note
 
-Issue #2 depends on the source-grounding gap tracked by #9. The Chapter 01 map can be reviewed only after `chapters/chapter-01/source.md` and `chapters/chapter-01/lesson-map.md` exist and clearly separate source claims from this repository's verification design choices.
+Issue #2 depends on the source-grounding gap tracked by #9. The Chapter 01 map can be reviewed only after `chapters/chapter-01/source.md` and `chapters/chapter-01/verification-map.md` exist and clearly separate source claims from this repository's verification design choices.
 
 ## Design decisions after Chapter 01 implementation
 

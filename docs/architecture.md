@@ -8,8 +8,8 @@ The repository uses a chapter-oriented learning layout with a small reusable har
 
 - `README.md` — overview and reading order.
 - `source.md` — source grounding for the chapter.
-- `lesson-map.md` — source claim → project interpretation → verification hypothesis.
-- `exercise.md` — hands-on commands.
+- `verification-map.md` — source claim → project interpretation → verification hypothesis.
+- `lab.md` — hands-on commands.
 - `expected-results.md` — expected command outcomes.
 - `fixtures/` — deterministic input/output examples.
 - `smoke/` — chapter-specific smoke scenarios.
@@ -29,4 +29,4 @@ Engineering tests live under `tests/`.
 - Chapter tests use `tests/chapter_01/`, `tests/chapter_02/`, etc.
 - Top-level tests such as `tests/test_repo_structure.py` enforce repository-wide layout invariants.
 
-This separation keeps the learning path readable while preserving importable, reusable harness code.
+This separation keeps the verification lab path readable while preserving importable, reusable harness code.

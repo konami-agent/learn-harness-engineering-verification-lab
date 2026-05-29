@@ -1,27 +1,52 @@
-# Chapter 01 Experiment: Capability does not imply reliability
+# Chapter 01 Verification Lab: Capability does not imply reliability
 
-## Chapter 01 learning path
+This folder is a verification lab for the upstream Lecture 01 and Project 01 material. It does not replace the upstream course.
+
+Upstream course source of truth:
+- Repository: https://github.com/walkinglabs/learn-harness-engineering
+- Upstream Lecture 01: https://github.com/walkinglabs/learn-harness-engineering/tree/main/docs/zh-TW/lectures/lecture-01-why-capable-agents-still-fail
+- Upstream Project 01: https://github.com/walkinglabs/learn-harness-engineering/tree/main/docs/zh-TW/projects/project-01-baseline-vs-minimal-harness
+- Upstream Project 01 code: https://github.com/walkinglabs/learn-harness-engineering/tree/main/projects/project-01
+
+Read the course there. Run verification labs here.
+
+## Chapter 01 verification lab path
 
 Recommended order:
 
 1. Read this overview.
-2. Read `source.md` for source grounding.
-3. Read `lesson-map.md` to see how the source claim becomes a verification hypothesis.
-4. Run `exercise.md`.
+2. Read `source.md` for upstream source grounding.
+3. Read `verification-map.md` to see how upstream claims become local verification hypotheses.
+4. Run `lab.md` for local executable checks.
 5. Compare your output with `expected-results.md`.
-6. Inspect `harness_lab/validators/chapter01.py` and `harness_lab/smoke.py` only after the learning flow is clear.
+6. Inspect `harness_lab/validators/chapter01.py` and `harness_lab/smoke.py` only after the verification flow is clear.
 
 ## Source grounding
 
-This experiment is grounded in `lesson-map.md` for Chapter 01: 「第一講. 模型能力強，不等於執行可靠」.
+This verification lab is grounded in upstream Lecture 01: 「第一講. 模型能力強，不等於執行可靠」.
 
 Source claim used here: model capability and engineering reliability are different. A coding agent can report success or produce plausible output while still failing an externally verifiable completion contract.
 
 Project interpretation: the harness must not trust an agent's final message. Completion must be decided by a deterministic validator reading concrete artifacts.
 
-## What this experiment proves
+## Boundary with upstream Project 01
 
-This experiment does not try to prove whether a model is intelligent or whether a specific agent can solve a large real-world task.
+Upstream Project 01 already provides the learning exercise:
+
+- `projects/project-01/starter/` demonstrates a weaker harness setup.
+- `projects/project-01/solution/` demonstrates a stronger harness setup using artifacts such as `AGENTS.md`, `init.sh`, and `feature_list.json`.
+
+This local lab does not duplicate that curriculum. Instead, it converts one subset of the learning claim into executable checks:
+
+- deterministic validator behavior;
+- positive and negative report fixtures;
+- deterministic smoke with and without `AGENTS.md`;
+- live-agent smoke contract for GitHub Copilot CLI;
+- explicit notes about what remains manual observation.
+
+## What this verification lab proves
+
+This lab does not try to prove whether a model is intelligent or whether a specific agent can solve a large real-world task.
 
 Instead, it turns the Chapter 01 engineering claim into a small executable contract:
 
@@ -31,7 +56,7 @@ Instead, it turns the Chapter 01 engineering claim into a small executable contr
 - placeholder evidence is not acceptable evidence;
 - completion must be decided by a repeatable validator, not by the model's final message.
 
-In other words, the experiment validates the Chapter 01 idea that model capability and engineering reliability are separate. A plausible success narrative can still fail the harness if it lacks externally checkable evidence.
+In other words, the lab validates the Chapter 01 idea that model capability and engineering reliability are separate. A plausible success narrative can still fail the harness if it lacks externally checkable evidence.
 
 ## Deterministic validator
 
@@ -59,28 +84,9 @@ This implements a minimal Definition of Done for Chapter 01: a task is not compl
 | Definition of Done should be command-verifiable. | The report is validated by `python3 -m harness_lab.validators.chapter01 validate ...`. |
 | Failures should point to harness gaps. | The validator returns concrete errors such as `artifact.path does not exist`, `evidence[0].type cannot be self_report`, or `evidence[0].detail is placeholder text`. |
 
-## Why JSON report artifacts
-
-The first Chapter 01 proof should be deterministic and small. JSON reports are useful here because they:
-
-- produce the same validation result every time;
-- make positive and negative fixtures easy to compare;
-- separate `claimed_status` from `evidence` and `checks`;
-- can become the contract that a later real-agent smoke test must satisfy.
-
-This order is intentional: first define the completion contract, then later let a real agent attempt to satisfy it. If the project starts with unstructured real-agent output, the result is too easy to judge subjectively.
-
 ## Positive fixture
 
 `chapters/chapter-01/fixtures/positive/report.json` is the passing case. It contains a machine-checkable JSON report with external file/validator evidence.
-
-It passes because:
-
-- the report exists and parses as JSON;
-- `claimed_status` is `completed`;
-- the artifact path exists;
-- evidence is not a self-report and not placeholder text;
-- checks are marked `passed` and reference valid evidence.
 
 ## Negative fixtures
 
@@ -90,23 +96,17 @@ The negative fixtures demonstrate the Chapter 01 failure mode: a report may clai
 - `negative-self-report-only/report.json`: claims completion using only agent self-report evidence.
 - `negative-placeholder-evidence/report.json`: claims completion with placeholder evidence.
 
-These cases are deliberately small. Their purpose is to prove that the harness rejects false or weak completion evidence even when the report is shaped like a plausible success artifact.
+## What remains manual observation
 
-## What this experiment does not prove yet
+The deterministic validator and smoke scenarios do not prove the full upstream Project 01 comparison by themselves. These remain manual observation or future larger experiments:
 
-This deterministic seed does not yet validate every claim discussed in Chapter 01.
+- whether a real agent fails more often without a harness;
+- whether the same real agent succeeds more often with a harness;
+- whether cross-session state improves long-running tasks;
+- whether `AGENTS.md` improves broad coding performance rather than this small scenario;
+- whether SWE-bench or large-repository success rates improve.
 
-It does not prove:
-
-- that a real agent fails more often without a harness;
-- that the same real agent succeeds more often with a harness;
-- that cross-session state improves long-running tasks;
-- that `AGENTS.md` improves coding performance;
-- that SWE-bench or large-repository success rates improve.
-
-Those require later real-agent smoke tests or larger experiments. This experiment is the first layer: it proves that the repository has an executable completion contract that refuses to confuse self-report with verified success.
-
-## Run the experiment
+## Run the lab
 
 Validate all Chapter 01 fixtures:
 
@@ -119,31 +119,14 @@ python3 -m harness_lab.validators.chapter01 validate \
   --json
 ```
 
-Expected result:
-
-- total: 4
-- passed: 1
-- failed: 3
-
-Write a machine-readable summary file:
-
-```bash
-python3 -m harness_lab.validators.chapter01 validate \
-  chapters/chapter-01/fixtures/positive/report.json \
-  --json \
-  --summary-file reports/chapter-01-summary.json
-```
-
 Run the full local verification suite:
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-## Why this satisfies Chapter 01
+## Why this satisfies the local lab scope
 
-This experiment separates agent capability claims from independently verifiable reliability. The positive fixture passes only because a concrete report artifact satisfies the validator contract. The negative fixtures fail even though they contain plausible completion claims.
+This verification lab separates agent capability claims from independently verifiable reliability. The positive fixture passes only because a concrete report artifact satisfies the validator contract. The negative fixtures fail even though they contain plausible completion claims.
 
-That is the core Chapter 01 point: success must be defined by the harness, not by the model's self-assessment.
-
-More precisely, `harness_lab/validators/chapter01.py` is the minimal executable form of the Chapter 01 claim: it accepts externally grounded completion evidence and rejects self-report, missing artifacts, and placeholder evidence. It is not a full benchmark; it is the deterministic proof seed that later real-agent experiments can reuse.
+That is the executable subset of the Chapter 01 point: success must be defined by the harness, not by the model's self-assessment.

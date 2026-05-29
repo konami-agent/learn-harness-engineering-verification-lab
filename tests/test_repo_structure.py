@@ -7,12 +7,12 @@ CHAPTER_01 = ROOT / "chapters" / "chapter-01"
 
 
 class RepoStructureTest(unittest.TestCase):
-    def test_chapter_01_learning_layout_exists(self):
+    def test_chapter_01_verification_lab_layout_exists(self):
         required_paths = [
             CHAPTER_01 / "README.md",
             CHAPTER_01 / "source.md",
-            CHAPTER_01 / "lesson-map.md",
-            CHAPTER_01 / "exercise.md",
+            CHAPTER_01 / "verification-map.md",
+            CHAPTER_01 / "lab.md",
             CHAPTER_01 / "expected-results.md",
             CHAPTER_01 / "fixtures" / "positive" / "report.json",
             CHAPTER_01 / "smoke" / "deterministic" / "manifest-with-agents.json",
@@ -39,12 +39,16 @@ class RepoStructureTest(unittest.TestCase):
             with self.subTest(path=path.relative_to(ROOT)):
                 self.assertFalse(path.exists(), f"obsolete layout still exists: {path.relative_to(ROOT)}")
 
-    def test_root_readme_points_to_learning_path(self):
+    def test_root_readme_points_to_verification_companion_path(self):
         text = (ROOT / "README.md").read_text(encoding="utf-8")
         for phrase in [
+            "walkinglabs/learn-harness-engineering",
+            "executable verification companion",
+            "does not replace the upstream course",
             "chapters/chapter-01/",
-            "Chapter 01 learning path",
-            "chapters/chapter-01/exercise.md",
+            "Chapter 01 verification lab path",
+            "chapters/chapter-01/lab.md",
+            "chapters/chapter-01/verification-map.md",
             "harness_lab/validators/",
             "tests/chapter_01/",
         ]:
