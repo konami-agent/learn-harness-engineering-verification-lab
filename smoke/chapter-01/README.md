@@ -21,7 +21,10 @@ The important rule is unchanged from the deterministic experiment: success is st
 
 ## Manifests
 
+Chapter 01 smoke is now an `AGENTS.md` presence/absence comparison. The positive path shows the agent being shaped by a workspace-local harness instruction layer; the control path uses the same agent command without `AGENTS.md` and must fail deterministic validation rather than relying on a self-report.
+
 - `manifest.json`: positive smoke scenario. The external agent command receives both `task.md` and `AGENTS.md`, treats AGENTS.md as the harness instruction layer, writes `definition-of-done-check.txt`, and then writes a valid Chapter 01 report.
+- `manifest-no-agents.json`: negative/control smoke scenario. The same external agent command receives `task.md` but no `AGENTS.md`, exits successfully, and writes only self-report-style completion evidence, so the validator rejects it.
 - `manifest-self-report-only.json`: negative smoke scenario. The external agent command exits successfully and writes a plausible report, but the report uses only self-report evidence, so the validator rejects it.
 
 ## Agent command adapter
@@ -53,6 +56,20 @@ Expected result:
 - `validator.passed`: 1
 - `validator.failed`: 0
 
+## Run the no-AGENTS.md control smoke scenario
+
+```bash
+python3 -m harness_lab.smoke run smoke/chapter-01/manifest-no-agents.json --json
+```
+
+Expected result:
+
+- wrapper exit code: 1
+- agent exit code: 0
+- `ok`: false
+- `validator.failed`: 1
+- validator error includes `evidence[0].type cannot be self_report`
+
 ## Run the negative smoke scenario
 
 ```bash
@@ -79,10 +96,11 @@ python3 -m harness_lab.smoke run \
 
 This wrapper adds the real-agent execution layer that the deterministic Chapter 01 validator deliberately avoided.
 
-The experiment now has three layers:
+The experiment now has four layers:
 
 1. `AGENTS.md` harness instructions: define the workspace-local definition of done before the agent acts;
-2. deterministic validator: decides whether a report satisfies the completion contract;
-3. real-agent smoke wrapper: runs an external agent command in a sandbox and feeds the resulting report to that validator.
+2. no-`AGENTS.md` control: runs the same adapter without the instruction layer and expects validation failure despite successful process exit;
+3. deterministic validator: decides whether a report satisfies the completion contract;
+4. real-agent smoke wrapper: runs an external agent command in a sandbox and feeds the resulting report to that validator.
 
-That separation is the key Chapter 01 harness lesson. Agent execution is allowed to be messy, stochastic, or tool-driven. Completion is still decided by a reproducible external validator, and the agent's behavior is shaped by repo-local instructions instead of an underspecified prompt.
+That separation is the key Chapter 01 harness lesson. Agent execution is allowed to be messy, stochastic, or tool-driven. Completion is still decided by a reproducible external validator, and the agent's behavior is shaped by repo-local instructions instead of an underspecified prompt. The presence/absence comparison makes the lesson explicit: the harness instruction layer is part of the reliability mechanism, not incidental documentation.

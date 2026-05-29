@@ -10,6 +10,7 @@ from harness_lab.smoke import run_smoke_manifest
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "smoke" / "chapter-01" / "manifest.json"
+NO_AGENTS_MANIFEST = ROOT / "smoke" / "chapter-01" / "manifest-no-agents.json"
 BAD_MANIFEST = ROOT / "smoke" / "chapter-01" / "manifest-self-report-only.json"
 
 
@@ -47,6 +48,24 @@ class Chapter01RealAgentSmokeWrapperTest(unittest.TestCase):
             self.assertIn("definition of done", compliance_artifact.read_text(encoding="utf-8"))
             self.assertIn("AGENTS.md", evidence_details)
             self.assertIn("definition-of-done-check.txt", evidence_details)
+
+    def test_runner_compares_agents_md_presence_against_no_agents_control(self):
+        self.assertTrue(NO_AGENTS_MANIFEST.exists(), "missing no-AGENTS.md control manifest")
+        with_agents_manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+        no_agents_manifest = json.loads(NO_AGENTS_MANIFEST.read_text(encoding="utf-8"))
+
+        self.assertEqual(no_agents_manifest["id"], "chapter-01-no-agents-control-smoke")
+        self.assertNotIn("AGENTS.md", no_agents_manifest.get("workspace_files", {}))
+        self.assertEqual(no_agents_manifest["agent_command"], with_agents_manifest["agent_command"])
+
+        with tempfile.TemporaryDirectory() as tmp:
+            summary = run_smoke_manifest(NO_AGENTS_MANIFEST, workspace_root=Path(tmp))
+
+        self.assertFalse(summary["ok"], summary)
+        self.assertEqual(summary["agent_exit_code"], 0)
+        self.assertEqual(summary["validator"]["failed"], 1)
+        errors = summary["validator"]["results"][0]["errors"]
+        self.assertIn("evidence[0].type cannot be self_report", errors)
 
     def test_runner_executes_agent_in_isolated_workspace_and_validates_report(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -113,6 +132,8 @@ class Chapter01RealAgentSmokeWrapperTest(unittest.TestCase):
             "GitHub Copilot CLI adapter",
             "docs/github-copilot-cli-smoke-agent.md",
             "AGENTS.md as the harness instruction layer",
+            "presence/absence comparison",
+            "manifest-no-agents.json",
             "definition-of-done-check.txt",
         ]:
             with self.subTest(phrase=phrase):
