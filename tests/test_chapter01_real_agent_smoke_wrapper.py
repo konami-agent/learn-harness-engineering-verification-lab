@@ -12,6 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "smoke" / "chapter-01" / "manifest.json"
 NO_AGENTS_MANIFEST = ROOT / "smoke" / "chapter-01" / "manifest-no-agents.json"
 BAD_MANIFEST = ROOT / "smoke" / "chapter-01" / "manifest-self-report-only.json"
+LIVE_COPILOT_MANIFEST = ROOT / "smoke" / "chapter-01" / "manifest-github-copilot-cli.json"
+LIVE_COPILOT_ADAPTER = ROOT / "smoke" / "chapter-01" / "agents" / "run_github_copilot_cli_noninteractive.sh"
 
 
 class Chapter01RealAgentSmokeWrapperTest(unittest.TestCase):
@@ -135,6 +137,65 @@ class Chapter01RealAgentSmokeWrapperTest(unittest.TestCase):
             "presence/absence comparison",
             "manifest-no-agents.json",
             "definition-of-done-check.txt",
+        ]:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, text)
+
+    def test_live_github_copilot_cli_manifest_points_to_real_adapter(self):
+        self.assertTrue(LIVE_COPILOT_MANIFEST.exists(), "missing live GitHub Copilot CLI manifest")
+        manifest = json.loads(LIVE_COPILOT_MANIFEST.read_text(encoding="utf-8"))
+
+        self.assertEqual(manifest["id"], "chapter-01-github-copilot-cli-smoke")
+        self.assertEqual(manifest["chapter"], "01")
+        self.assertGreaterEqual(manifest.get("timeout_seconds", 0), 300)
+        self.assertTrue(manifest.get("sandbox", {}).get("isolate_workspace"))
+        self.assertEqual(manifest["expected_report"], "report.json")
+        self.assertEqual(
+            manifest["agent_command"],
+            ["bash", "{repo_root}/smoke/chapter-01/agents/run_github_copilot_cli_noninteractive.sh"],
+        )
+        workspace_files = manifest.get("workspace_files", {})
+        self.assertIn("AGENTS.md", workspace_files)
+        self.assertIn("definition of done", workspace_files["AGENTS.md"])
+        self.assertIn("task.md", workspace_files)
+        self.assertIn("AGENTS.md", workspace_files["task.md"])
+
+    def test_live_github_copilot_cli_adapter_really_invokes_copilot(self):
+        self.assertTrue(LIVE_COPILOT_ADAPTER.exists(), "missing live GitHub Copilot CLI adapter")
+        text = LIVE_COPILOT_ADAPTER.read_text(encoding="utf-8")
+        for phrase in [
+            "#!/usr/bin/env bash",
+            "set -euo pipefail",
+            "command -v copilot",
+            "copilot \\",
+            "-p \"$(cat copilot-smoke-prompt.md)\"",
+            "--allow-all-tools",
+            "--allow-all-paths",
+            "--no-ask-user",
+            "--output-format json",
+            "--silent",
+            "HARNESS_SMOKE_WORKSPACE",
+            "HARNESS_SMOKE_REPORT_PATH",
+            "HARNESS_SMOKE_SCENARIO_ID",
+            "AGENTS.md",
+            "task.md",
+            "definition-of-done-check.txt",
+            "python3 -m harness_lab.chapter01 validate",
+        ]:
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, text)
+
+    def test_readme_distinguishes_deterministic_fixtures_from_live_copilot(self):
+        doc = ROOT / "smoke" / "chapter-01" / "README.md"
+        text = doc.read_text(encoding="utf-8")
+        for phrase in [
+            "deterministic Python adapters",
+            "do not invoke GitHub Copilot CLI",
+            "live GitHub Copilot CLI smoke",
+            "manifest-github-copilot-cli.json",
+            "run_github_copilot_cli_noninteractive.sh",
+            "requires Copilot authentication",
+            "not a mandatory CI path",
         ]:
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, text)

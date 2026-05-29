@@ -23,13 +23,16 @@ The important rule is unchanged from the deterministic experiment: success is st
 
 Chapter 01 smoke is now an `AGENTS.md` presence/absence comparison. The positive path shows the agent being shaped by a workspace-local harness instruction layer; the control path uses the same agent command without `AGENTS.md` and must fail deterministic validation rather than relying on a self-report.
 
-- `manifest.json`: positive smoke scenario. The external agent command receives both `task.md` and `AGENTS.md`, treats AGENTS.md as the harness instruction layer, writes `definition-of-done-check.txt`, and then writes a valid Chapter 01 report.
-- `manifest-no-agents.json`: negative/control smoke scenario. The same external agent command receives `task.md` but no `AGENTS.md`, exits successfully, and writes only self-report-style completion evidence, so the validator rejects it.
-- `manifest-self-report-only.json`: negative smoke scenario. The external agent command exits successfully and writes a plausible report, but the report uses only self-report evidence, so the validator rejects it.
+- `manifest.json`: positive deterministic smoke scenario. The external agent command receives both `task.md` and `AGENTS.md`, treats AGENTS.md as the harness instruction layer, writes `definition-of-done-check.txt`, and then writes a valid Chapter 01 report.
+- `manifest-no-agents.json`: negative/control deterministic smoke scenario. The same external agent command receives `task.md` but no `AGENTS.md`, exits successfully, and writes only self-report-style completion evidence, so the validator rejects it.
+- `manifest-self-report-only.json`: negative deterministic smoke scenario. The external agent command exits successfully and writes a plausible report, but the report uses only self-report evidence, so the validator rejects it.
+- `manifest-github-copilot-cli.json`: live GitHub Copilot CLI smoke scenario. It invokes `agents/run_github_copilot_cli_noninteractive.sh`, which runs the standalone `copilot` command and then validates the generated report. This requires Copilot authentication, network access, quota/subscription availability, and is not a mandatory CI path.
 
 ## Agent command adapter
 
-The current checked-in agent commands are deterministic Python adapters under `agents/`. They stand in for a real coding agent process during local and CI-safe verification.
+The current checked-in default agent commands are deterministic Python adapters under `agents/`. They stand in for a real coding agent process during local and CI-safe verification. They do not invoke GitHub Copilot CLI.
+
+These deterministic Python adapters keep the smoke harness testable even on machines where the Codex CLI, GitHub Copilot CLI, or another live agent is unavailable. The live GitHub Copilot CLI smoke is intentionally separate because it requires Copilot authentication and external service availability.
 
 A later Codex, Claude Code, or other real-agent adapter can reuse the same manifest shape as long as it writes the expected report file. The wrapper contract is the same:
 
@@ -41,7 +44,15 @@ This keeps the smoke harness testable even on machines where the Codex CLI or an
 
 ## GitHub Copilot CLI adapter
 
-For a complete GitHub Copilot CLI adapter method for the standalone `copilot` command from `github/copilot-cli`, including installation checks, `copilot -p` non-interactive execution, permissions, live manifest shape, and the fallback path, see `docs/github-copilot-cli-smoke-agent.md`.
+The committed live GitHub Copilot CLI smoke path is:
+
+```bash
+python3 -m harness_lab.smoke run smoke/chapter-01/manifest-github-copilot-cli.json --json
+```
+
+That manifest calls `agents/run_github_copilot_cli_noninteractive.sh`, which actually invokes `copilot -p` in non-interactive mode. It is a local/live smoke path, not a mandatory CI path.
+
+For the complete GitHub Copilot CLI adapter method for the standalone `copilot` command from `github/copilot-cli`, including installation checks, `copilot -p` non-interactive execution, permissions, authentication, and the fallback path, see `docs/github-copilot-cli-smoke-agent.md`.
 
 ## Run the positive smoke scenario
 

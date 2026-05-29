@@ -149,7 +149,7 @@ This avoids making every test run depend on subscription state, quota, login sta
 
 ## Live non-interactive manifest
 
-Create `smoke/chapter-01/manifest-github-copilot-cli.json`:
+The committed live manifest is `smoke/chapter-01/manifest-github-copilot-cli.json`:
 
 ```json
 {
@@ -174,7 +174,7 @@ Create `smoke/chapter-01/manifest-github-copilot-cli.json`:
 
 ## Non-interactive adapter
 
-Create `smoke/chapter-01/agents/run_github_copilot_cli_noninteractive.sh`:
+The committed live adapter is `smoke/chapter-01/agents/run_github_copilot_cli_noninteractive.sh`:
 
 ```bash
 #!/usr/bin/env bash
